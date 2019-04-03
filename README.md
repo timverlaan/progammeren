@@ -1,2 +1,2 @@
-# progammeren
+# programmeren
 opdrachten Data Processing

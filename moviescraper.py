@@ -75,7 +75,9 @@ def extract_movies(dom):
             star_name = star.text
             stars_film += star_name + "; "
         if stars_film:
+            stars_film = stars_film.rstrip('; ')
             star_names.append(stars_film)
+    
 
         # try:
         #     print(star_name)    

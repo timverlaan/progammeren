@@ -10,6 +10,7 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
+import re
 
 TARGET_URL = "https://www.imdb.com/search/title?title_type=feature&release_date=2008-01-01,2018-01-01&num_votes=5000,&sort=user_rating,desc"
 BACKUP_HTML = 'movies.html'
@@ -43,6 +44,7 @@ def extract_movies(dom):
     years = []
     star_names = []
     runtimes = []
+
     
     for item in title:
         title_name = item.find("a").text
@@ -69,9 +71,9 @@ def extract_movies(dom):
 
     for item in stars:
         stars_film = ""
-        for star in item.find_all("a"):
+        for star in item.find_all("a", href=lambda href: href and "li_st" in href):
             star_name = star.text
-            stars_film += star_name + "- "
+            stars_film += star_name + "; "
         if stars_film:
             star_names.append(stars_film)
 
@@ -90,7 +92,7 @@ def extract_movies(dom):
     # print(years)
     # print(star_names)
     # print(runtimes)
-    del star_names[0:2]
+    # del star_names[0:2]
     # print(star_names)
 
     rows = zip(titles, ratings, years, star_names, runtimes)
@@ -112,6 +114,7 @@ def save_csv(outfile, movies):
         for lin in line:
             for li in lin:
                 print (li)
+                # pass
             writer.writerow(lin)
 
 

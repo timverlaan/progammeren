@@ -33,30 +33,29 @@ def extract_movies(dom):
     # NOTE: FOR THIS EXERCISE YOU ARE ALLOWED (BUT NOT REQUIRED) TO IGNORE
     # UNICODE CHARACTERS AND SIMPLY LEAVE THEM OUT OF THE OUTPUT.
 
+    # scrape from IMDB
     title = dom.find_all("h3", {"class": "lister-item-header"})
     rating = dom.find_all("div", {"class": "inline-block ratings-imdb-rating"})
     year_of_release = dom.find_all("span", {"class": "lister-item-year text-muted unbold"})
     stars = dom.find_all( "p", {"class": ""})
     runtime = dom.find_all("span", {"class": "runtime"})
 
+    # make empty lists
     titles = []
     ratings = []
     years = []
     star_names = []
     runtimes = []
 
-    
+    #populate each lists with the correct data from IMDB
     for item in title:
         title_name = item.find("a").text
         titles.append(title_name)
-        # print(title_name)
-        
     
     for item in rating:
         if item.text is not None:
             score = item.text[2:5]
             ratings.append(score)
-        # print(item.text) 
         
     for item in year_of_release:
         if len(item.text) == 11:
@@ -67,8 +66,6 @@ def extract_movies(dom):
             year = item.text[1:5]
         years.append(year)
 
-        # print(item.text)
-
     for item in stars:
         stars_film = ""
         for star in item.find_all("a", href=lambda href: href and "li_st" in href):
@@ -78,31 +75,15 @@ def extract_movies(dom):
             stars_film = stars_film.rstrip('; ')
             star_names.append(stars_film)
     
-
-        # try:
-        #     print(star_name)    
-        # except:
-        #     pass
-
     for item in runtime:
         time = item.text[:3]
         runtimes.append(time)
-        # print(time)
 
-    # print(titles)
-    # print(ratings)
-    # print(years)
-    # print(star_names)
-    # print(runtimes)
-    # del star_names[0:2]
-    # print(star_names)
-
+    # zip the lists together in one list
     rows = zip(titles, ratings, years, star_names, runtimes)
-
     result = list(rows)
-    # print(result)
 
-    return [result]   # REPLACE THIS LINE AS WELL IF APPROPRIATE
+    return [result]   
 
 
 def save_csv(outfile, movies):
@@ -112,15 +93,10 @@ def save_csv(outfile, movies):
     writer = csv.writer(outfile)
     writer.writerow(['Title', 'Rating', 'Year', 'Actors', 'Runtime'])
     
+    # write rows to csv file
     for line in movies:
-        for lin in line:
-            for li in lin:
-                print (li)
-                # pass
-            writer.writerow(lin)
-
-
-    # ADD SOME CODE OF YOURSELF HERE TO WRITE THE MOVIES TO DISK
+        for item in line:
+            writer.writerow(item)
 
 
 def simple_get(url):

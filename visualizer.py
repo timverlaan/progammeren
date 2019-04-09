@@ -16,6 +16,7 @@ END_YEAR = 2018
 # Global dictionary for the data
 data_dict = {str(key): [] for key in range(START_YEAR, END_YEAR)}
 
+# function to calc average
 def Average(lst): 
     return sum(lst) / len(lst) 
 
@@ -25,12 +26,14 @@ with open(INPUT_CSV, mode='r') as infile:
     with open('movies_new.csv', mode='w') as outfile:
         writer = csv.writer(outfile)
         for rows in reader:
+            # ignore first/header line
             if not rows[2] == 'Year':
                 data_dict[rows[2]].append(float(rows[1]))
 
 averages = []
 years = []
 
+# populate lists with keys and values
 for rows in data_dict:
     averages.append(Average(data_dict[rows]))
 for keys in data_dict.keys():
@@ -38,6 +41,7 @@ for keys in data_dict.keys():
 
 if __name__ == "__main__":
 
+    # use lists created to plot the graph
     plt.plot(years, averages, 'k', years, averages, 'bo')
     plt.ylabel('Averages Rating')
     plt.xlabel('Year')

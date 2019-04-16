@@ -1,4 +1,11 @@
+#!/usr/bin/env python
+
+"""EDA.py: Exploratory Data Analysis of sample dataset"""
+
+__author__      = "Tim Verlaan 11669128"
+
 import csv
+import math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt 
@@ -8,6 +15,7 @@ import pprint as pp
 import json
 
 def set_up():
+    """Parsing & Preprocessing"""
     
     csv_file = "input.csv"
         
@@ -45,7 +53,7 @@ def set_up():
     # unify the region column
     df.loc[df['Region'].str.contains('NEAR EAST'), 'Region'] = 'ASIA (EX. NEAR EAST)'
 
-    # remove the outliners
+    # remove the outliners - considered outliner when bigger than 3 std.dev to the right of the distribution
     df = df[df['GDP ($ per capita) dollars'] < (3*df['GDP ($ per capita) dollars'].std())]
 
     print(df)
@@ -54,6 +62,7 @@ def set_up():
 
 
 def central_tendency(df):
+    """Analyzing & Presenting GDP"""
 
     # make boxplots to see if there are outliners
     # sns.boxplot(x=df['GDP ($ per capita) dollars'])
@@ -66,15 +75,18 @@ def central_tendency(df):
 
     print(f'\n GDP standard deviation = {std_dev} \n GDP mode = {mode} \n GDP mean = {mean} \n GDP median = {median} \n')
 
+    # Sturge's Rule for amount of Bins in histogram source: https://www.statisticshowto.datasciencecentral.com/choose-bin-sizes-statistics/
+    K = round(1 + math.log(226,2))
 
    # plot the GDP graph with correct graph info
-    df['GDP ($ per capita) dollars'].hist()
-    plt.ylabel('Countries')
-    plt.xlabel('GDP')
-    plt.suptitle('GDP around the Globe')
+    df['GDP ($ per capita) dollars'].hist(bins=K)
+    plt.ylabel('Number of Countries')
+    plt.xlabel('GDP ($ per capita)')
+    plt.suptitle('GDP ($ per capita) around the Globe')
     plt.show()
 
 def five_num_sum (df):
+    """Analyzing & Presenting Infancy"""
 
     # check if the descriptives match
     # print(df.describe())
@@ -97,17 +109,22 @@ def five_num_sum (df):
     print(f' Infant minimum = {infant_minimum}\n Infant first quantile = {infant_25}\n Infant median = {infant_median}\n Infant third quantile = {infant_75}\n Infant maximum = {infant_maximum} \n ')
 
 def converting(df):
+    """Presenting in a JSON file"""
 
+    # create dict with country-column as index
     df_dict = df.set_index('Country').T.to_dict('dict')
 
+    # make json file from the dict
     with open('result.json', 'w') as fp:
         json.dump(df_dict, fp)
 
+    # use pretty print to see if dict matches the json example in the exercise
     # pp.pprint(df_dict)
 
 
 if __name__ == "__main__":
-
+    """Separating the function and calling them orderly"""
+    
     df  = set_up()
     
     central_tendency(df)

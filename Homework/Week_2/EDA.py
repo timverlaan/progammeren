@@ -58,12 +58,13 @@ def central_tendency(df):
     # make boxplots to see if there are outliners
     # sns.boxplot(x=df['GDP ($ per capita) dollars'])
 
+    # calc descriptives. Note: mode[0] makes sure it only prints the value, not the zero and the dtype
     std_dev = df['GDP ($ per capita) dollars'].std()
-    mode = df['GDP ($ per capita) dollars'].mode()
+    mode = df['GDP ($ per capita) dollars'].mode()[0]
     mean = df['GDP ($ per capita) dollars'].mean()
     median = df['GDP ($ per capita) dollars'].median()
 
-    print(f'standard deviation = {std_dev} \n mode = {mode} \n mean = {mean} \n median = {median}')
+    print(f'\n GDP standard deviation = {std_dev} \n GDP mode = {mode} \n GDP mean = {mean} \n GDP median = {median} \n')
 
 
    # plot the GDP graph with correct graph info
@@ -78,18 +79,22 @@ def five_num_sum (df):
     # check if the descriptives match
     # print(df.describe())
 
-    # make boxplots to see if there are outliners
+    # make boxplots to see if there are outliners and swarm plot to see distribution more clearly
     sns.boxplot(x=df['Infant mortality (per 1000 births)'])
-    
+    sns.swarmplot(x=df['Infant mortality (per 1000 births)'], color = ".01")
+  
     # calc the min, first quant, median, third quant, max
     infant_minimum = df['Infant mortality (per 1000 births)'].min()
     infant_25 = df['Infant mortality (per 1000 births)'].quantile(0.25)
     infant_median = df['Infant mortality (per 1000 births)'].median()
     infant_75 = df['Infant mortality (per 1000 births)'].quantile(0.75)
     infant_maximum = df['Infant mortality (per 1000 births)'].max()
+
+    #print the boxplot and swarmplot
+    plt.show()
     
     # print the descriptives
-    print(f' minimum = {infant_minimum}\n first quantile = {infant_25}\n median = {infant_median}\n third quantile = {infant_75}\n maximum = {infant_maximum} \n ')
+    print(f' Infant minimum = {infant_minimum}\n Infant first quantile = {infant_25}\n Infant median = {infant_median}\n Infant third quantile = {infant_75}\n Infant maximum = {infant_maximum} \n ')
 
 def converting(df):
 
@@ -98,7 +103,7 @@ def converting(df):
     with open('result.json', 'w') as fp:
         json.dump(df_dict, fp)
 
-    pp.pprint(df_dict)
+    # pp.pprint(df_dict)
 
 
 if __name__ == "__main__":

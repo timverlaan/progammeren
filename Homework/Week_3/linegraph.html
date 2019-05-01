@@ -55,7 +55,7 @@
                     var canvasWidth = canvas.width * 0.8
 
                     // set these values for the data 
-                    sections = 30;
+                    sections = 29;
                     Val_max = 100;
                     Val_min = 0;
                     var stepSize = 10;
@@ -91,8 +91,8 @@
                     for (scale=Val_max;scale>=Val_min;scale = scale - stepSize) {
                         var y = columnSize + (yScale * count * stepSize); 
                         context.fillText(scale, margin,y + margin);
-                        context.moveTo(rowSize,y)
-                        context.lineTo(canvasWidth - columnSize, y)
+                        context.moveTo(3 * margin,y)
+                        context.lineTo(canvasWidth - 0.5 * columnSize, y)
                         count++;
                     }
                     context.stroke();
@@ -117,12 +117,12 @@
                     context.fillText("Percentage langst mogelijke zonneschijnduur (in procenten)", canvasWidth * 0.95, canvas.height * 0.42)
 
 
-                    // load data into graph and 
+                    // load data into graph and -20 to correctly locate plot in grid
                     function plotData(dataSet) {
                         context.beginPath();
-                        context.moveTo(0, dataSet[0]);
+                        context.moveTo(-20, dataSet[0]);
                         for (i=1;i<sections;i++) {
-                            context.lineTo(i * xScale, dataSet[i]);
+                            context.lineTo((i * xScale) - 20, dataSet[i]);
                         }
                         context.stroke();
                     }

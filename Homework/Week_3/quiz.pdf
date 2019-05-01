@@ -1,0 +1,8 @@
+1) the == operator compares values, the === operator also compares the type of these values.
+2) a closure has access to its own scope (between curly brackets), access to variables outside it's own function and access to global variables
+3) a function that can take a function as an argument or that returns a function
+4) queryselector method returns the first element that matches a specified CSS selector in the DOM 
+
+Get the first <p> element in the document:
+
+document.querySelector("p");

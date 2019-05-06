@@ -1,20 +1,89 @@
 <!DOCTYPE html>
-<!––    Tim Verlaan
-        11691328
-        Displaying Json data in HTML Canvas
-––>
+    <!-- Tim Verlaan
+    11691328
+    Displaying Json data in HTML Canvas -->
 
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <title>D3 Test</title>
         <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+        <link rel="stylesheet" type="css" href="style.css">
     </head>
 
-    <body>
-            <script type="text/javascript">
-                // Your beautiful D3 code will go here
+    <body>     
 
-            </script>
+        <div class="importData"></div>
+
+        <script type="text/javascript">
+            // Chart Title
+            d3.select('body').append('h1').text('Bar Chart') 
+                      
+                var w = 1000;
+                var h = 500;
+                var w1 = (w * 0.95)
+                var h1 = (h * 0.98)
+                var barPadding = 1;
+                var yScale = d3.scaleLinear()
+                    .domain([0, 1])
+                    .range([0, h]);
+                
+                var xScale = d3.scaleLinear()
+                    .domain([0, 38])
+                    .range([0, w]);
+
+                var svg = d3.select("body")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+            // Add y-axis
+            svg.append("g")
+                .attr("class", "axis-y")
+                .call(d3.axisRight(yScale).ticks(10));
+
+            // Add x-axis
+            svg.append("g")
+                .attr("class", "axis-x")
+                .call(d3.axisBottom(xScale).ticks(38));
+              
+
+            d3.json("data_oecd_small.json").then(function(data)
+            {
+                svg.selectAll("rect")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    // .attr("class", "bar")
+                    .attr("width", (w1 / data.length - barPadding))
+                    .attr("y", function(d) {
+                        return (h1 - yScale(d.Value))  //Height minus data value
+                    })      
+                    .attr("height", function(d)
+                    {
+                        return  yScale(d.Value);
+                    })         
+                    .attr("x", function(d, i)
+                    {             
+                        return (i * (w1 / data.length)) + 10
+                    })     
+                    .attr("fill", function(d) {
+                        return "rgb(0, 0, " + (yScale(d.Value) - 130 ) + ")"; // minus smallest value to have get a nice spectrum
+                    });
+
+                // svg.selectAll("text")
+                //     .data(data)
+                //     .enter()
+                //     .append("text")    
+                //     .attr("x", function(d, i) {
+                //             return i * (w1 / data.length) + 15;  // +15
+                //     })
+                //     .attr("y", function(d) {
+                //             return h1 - yScale(d.LOCATION) + 15;  // +15
+                //     });
+
+            });
+                      
+        </script>
     </body>
     </html>

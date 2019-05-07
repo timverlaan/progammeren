@@ -8,81 +8,123 @@
         <meta charset="utf-8">
         <title>D3 Test</title>
         <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-        <link rel="stylesheet" type="css" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css"/>
     </head>
 
     <body>     
+        <h1>Bar Chart</h1>
+        <div id="abc">        <b>Tim Verlaan</b> 
+        11691328 
+        Displaying OECD Income Inequality data in HTML Canvas</div>
+        <button onclick=drawChart(true)>Alphabetical Sort</button>
+        <button onclick=drawChart(false)>Value Sort</button>
 
-        <div class="importData"></div>
-
+        <!-- <svg width="960" height="500"></svg>    -->
         <script type="text/javascript">
-            // Chart Title
-            d3.select('body').append('h1').text('Bar Chart') 
-                      
-                var w = 1000;
-                var h = 500;
-                var w1 = (w * 0.95)
-                var h1 = (h * 0.98)
+
+                var svg = d3.select("body").append("svg").attr("width", "960").attr("height", "500");                
+                var margin = 
+                        {
+                        top: 20,
+                        right: 20,
+                        bottom: 50,
+                        left: 50
+                        };
+                var w = +svg.attr("width") - margin.left - margin.right;
+                var h = +svg.attr("height") - margin.top - margin.bottom;
                 var barPadding = 1;
-                var yScale = d3.scaleLinear()
-                    .domain([0, 1])
-                    .range([0, h]);
-                
-                var xScale = d3.scaleLinear()
-                    .domain([0, 38])
+                var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")") // make new frame inside the svg      
+
+            function drawChart(sorted){
+                d3.select("svg").exit().remove()
+                dataFile = sorted ? "_sort" : "";
+                actualDataFile = "data_oecd_small" + dataFile + ".json";
+
+
+            }
+            d3.json("data_oecd_small_sort.json").then(function(data)
+            {
+                var xScale = d3.scaleBand()     // make seperate bins for every country
+                    .domain(data.map(function (d) { return d.LOCATION; }))
                     .range([0, w]);
 
-                var svg = d3.select("body")
-                    .append("svg")
-                    .attr("width", w)
-                    .attr("height", h);
+                var yScale = d3.scaleLinear()
+                    .domain([0, 1])             // data is normalized
+                    .range([h, 0]);
+                
+                var ColourScale = d3.scaleLinear()
+                    .domain([0.25, 0.6])        // make the bar colour go from blue to black
+                    .range([0, 255])
 
-            // Add y-axis
-            svg.append("g")
-                .attr("class", "axis-y")
-                .call(d3.axisRight(yScale).ticks(10));
+                var tip = d3.tip()
+                    .attr('class', 'd3-tip')
+                    .offset([-20, 0])
+                    .html(function(d) {
+                        return "<strong>GINI Value:</strong> <span style='color:red'>" + d.Value + "</span>";
+                    })    
 
-            // Add x-axis
-            svg.append("g")
-                .attr("class", "axis-x")
-                .call(d3.axisBottom(xScale).ticks(38));
-              
+                    svg.call(tip);
 
-            d3.json("data_oecd_small.json").then(function(data)
-            {
-                svg.selectAll("rect")
+                dataset = data.map(function (d) { return d.LOCATION; })            
+
+                g.selectAll(".bar")
                     .data(data)
                     .enter()
                     .append("rect")
-                    // .attr("class", "bar")
-                    .attr("width", (w1 / data.length - barPadding))
+                    .attr("class", "bar")       // make hover
+                    .attr("width", (w / dataset.length - barPadding))
                     .attr("y", function(d) {
-                        return (h1 - yScale(d.Value))  //Height minus data value
+                        return yScale(d.Value); //Height minus data value
                     })      
                     .attr("height", function(d)
                     {
-                        return  yScale(d.Value);
+                        return  h - yScale(d.Value);
                     })         
                     .attr("x", function(d, i)
                     {             
-                        return (i * (w1 / data.length)) + 10
+                        return xScale(d.LOCATION);
                     })     
                     .attr("fill", function(d) {
-                        return "rgb(0, 0, " + (yScale(d.Value) - 130 ) + ")"; // minus smallest value to have get a nice spectrum
-                    });
+                        return "rgb(0, 0, " + ColourScale(d.Value) + ")"; // minus smallest value to have get a nice spectrum
+                    })
+                    .on('mouseover', tip.show)
+                    .on('mouseout', tip.hide)
 
-                // svg.selectAll("text")
-                //     .data(data)
-                //     .enter()
-                //     .append("text")    
-                //     .attr("x", function(d, i) {
-                //             return i * (w1 / data.length) + 15;  // +15
-                //     })
-                //     .attr("y", function(d) {
-                //             return h1 - yScale(d.LOCATION) + 15;  // +15
-                //     });
+                    // Add x-axis
+                    g.append("g")
+                        .attr("class", "axis-x")
+                        .attr("transform", "translate(0," + h  + ")")
+                        .call(d3.axisBottom(xScale));
+                        
 
+                    // Add y-axis
+                    g.append("g")
+                        .attr("class", "axis-y")
+                        .attr("y", h)
+                        .call(d3.axisLeft(yScale).tickSize(-w));
+
+                    
             });
+            // text label for the x axis
+            g.append("text")   
+                .attr("id", "abc")
+                .attr("transform",
+                        "translate(" + (w/2) + " ," + 
+                            (h + 2 * margin.top ) + ")")
+                .style("text-anchor", "middle")
+                .text("Country");
+                    
+            // text label for the y axis
+            g.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - margin.left)
+                .attr("x",0 - (h / 2))
+                .attr("dy", "1em")
+                .attr("id", "abc")
+                .style("text-anchor", "middle")
+                .text("GINI Coëfficient");   
+                
                       
         </script>
     </body>

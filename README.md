@@ -2,6 +2,7 @@
 opdrachten Data Processing
 
 link website Line Chart:
-https://timverlaan.github.io/programmeren/blob/master/Homework/Week_3/linegraph.html
+https://timverlaan.github.io/programmeren/Homework/Week_3/linegraph.html
 
-link website bar chart:
+link website Bar Chart:
+https://timverlaan.github.io/programmeren/Homework/Week_4/index.html

@@ -14,7 +14,7 @@
 
     <body>     
         <h1>Bar Chart</h1>
-        <div id="abc">        <b>Tim Verlaan</b> 
+        <div id="info">        <b>Tim Verlaan</b> 
         11691328 
         Displaying OECD Income Inequality data in HTML Canvas
         Data source: https://data.oecd.org/inequality/income-inequality.htm</div>
@@ -62,30 +62,21 @@
                         .domain([0.25, 0.6])        // make the bar colour go from blue to black
                         .range([0, 255])
 
-                    var tip = d3.tip()
+                    var tip = d3.tip()              // displays data when hovering
                         .attr('class', 'd3-tip')
                         .offset([-20, 0])
                         .html(function(d) {
                             return "<strong>GINI Value:</strong> <span style='color:red'>" + d.Value + "</span>";
                         })    
 
-                        svg.call(tip);
-
-                    dataset = data.map(function (d) { return d.LOCATION; })            
+                        svg.call(tip);        
 
                     g.selectAll(".bar")
                         .data(data)
                         .enter()
                         .append("rect")
                         .attr("class", "bar")       // make hover
-                        .attr("width", (w / dataset.length - barPadding))
-                        .attr("y", function(d) {
-                            return yScale(d.Value); //Height minus data value
-                        })      
-                        .attr("height", function(d)
-                        {
-                            return  h - yScale(d.Value);
-                        })         
+                        .attr("width", (w / data.length - barPadding))
                         .attr("x", function(d, i)
                         {             
                             return xScale(d.LOCATION);
@@ -93,6 +84,13 @@
                         .attr("fill", function(d) {
                             return "rgb(0, 0, " + ColourScale(d.Value) + ")"; // minus smallest value to have get a nice spectrum
                         })
+                        .attr("y", function(d) {
+                            return yScale(d.Value); //Height minus data value
+                        })      
+                        .attr("height", function(d)
+                        {
+                            return  h - yScale(d.Value);
+                        })         
                         .on('mouseover', tip.show)
                         .on('mouseout', tip.hide)       // make dynamic
 

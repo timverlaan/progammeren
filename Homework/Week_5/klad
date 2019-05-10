@@ -1,0 +1,65 @@
+    // var finalDataset = []
+    // ;(function($) {
+    //     if (!$.concat) {
+    //         $.extend({
+    //             concat: function() {
+    //                 return Array.prototype.concat.apply([], arguments);
+    //             }
+    //         });
+    //     }
+    // })(jQuery);
+
+    // var finalDataset = $.concat(teenArea, teenPreg, GDPData);
+    
+    // var countryDict = {};
+    // var indiDict = {};
+    
+    // var nations = []
+    // var indicators = []
+
+// for (var i = 0; i < 3; i++) { 
+    //     Object.values(finalDataset[i]).forEach(function(dataSep){
+    //         counter = 0
+    //         // console.log(dataSep)
+    //         for (var j = 0; j < Object.values(dataSep).length; j++){
+    //             if (countries.includes(Object.values(dataSep)[j].Country)){
+    //                 if ((years.includes(Object.values(dataSep)[j].Time) || ((years.includes(Object.values(dataSep)[j].Year))))) {
+    //                 var nation = Object.values(dataSep)[j].Country
+    //                 var indicator = Object.values(dataSep)[j].Indicator || Object.values(dataSep)[j].Transaction
+
+    //                 dataPoints.push(Object.values(dataSep)[j].Datapoint)
+    //                 // console.log(nation, dataPoints)
+    //                 counter++
+    //                 }     
+    //             }  
+    //             if (counter == 5){
+    //                 if ((nation == "France") && (indicator == "Adolescent fertility rates")) {
+    //                     dataPoints.shift()
+    //                     dataPoints.shift()
+    //                     dataPoints.shift()
+    //                 }
+    //                 if (indicators.includes(indicator)){
+                        
+    //                 } else {
+    //                     indicators.push(indicator)
+    //                     nations = []
+    //                     console.log(indicators)
+    //                 }
+
+    //                 if (nations.includes(nation)){
+                        
+    //                 } else {
+    //                     nations.push(nation)
+    //                     console.log(nations)
+    //                 }
+    //                 // countryDict[nations[i]] = dataPoints
+    //                 // indiDict[indicators[i]] = countryDict
+    //                 // console.log(nation, dataPoints)
+    //                 // console.log(countryDict)
+    //                 // console.log(indiDict)
+    //                 dataPoints = [] 
+    //                 counter = 0
+    //             }  
+    //         } 
+    //     })
+    // }  

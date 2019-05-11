@@ -21,8 +21,19 @@
         Displaying Fertility Rates and Criminal Surroundings of Mediterranean Countries
         Data source: OECD</div>
 
-        <div id="buttons"><button onclick=drawChart(true)>GINI Value Sort</button>
-            <button onclick=drawChart(false)>Alphabetic Sort</button></div>
+        <div class="slidecontainer">
+            <input type="range" min="2012" max="2016" value="1" class="slider" id="myRange">
+            <p>Value: <span id="demo"></span></p>
+        </div>
+        <script>
+            var slider = document.getElementById("myRange");
+            var output = document.getElementById("demo");
+            output.innerHTML = slider.value;
+
+            slider.oninput = function() {
+            output.innerHTML = this.value;
+            }
+        </script>
     </body>
 </html> 
         

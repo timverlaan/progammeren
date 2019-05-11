@@ -180,7 +180,13 @@ function drawScatter(teenArea, teenPreg, GDPData){
 
     var dataset = mergeData(teenArea, teenPreg, GDPData)
 
+    var countries = ["Croatia", "Italia", "Spain", "Greece", "France", "Slovenia", "Italy"]
+
+
     console.log(dataset)
+    var country = console.log(countries[2])
+    console.log(dataset["Adolescent fertility rates"].Spain)
+  
     var margin = 
             {
             top: 35,
@@ -198,7 +204,7 @@ function drawScatter(teenArea, teenPreg, GDPData){
         .range([0, w]);
 
     var yScale = d3.scaleLinear()
-        // .domain([0, d3.max(teenPreg, function(d) { return d.Datapoint; })])         
+        // .domain([0, d3.max(dataset, function(d) { return d; })])     
         .domain([0, 20])   
         .range([h, 0]);
     
@@ -256,13 +262,13 @@ function drawScatter(teenArea, teenPreg, GDPData){
         .style("text-anchor", "middle")
         .text("Fertility Rate & Living Standards of Teens over various GDPs");
 
-    g.selectAll(".bar")
+    g.selectAll("circle")
         .data(dataset)
         .enter()
         .append("circle")
-        .attr("cx", function (d,i) { return x(d[0][i][4]); } )
-        .attr("cy", function (d,i) { return y(d[1][i][4]); } )
-        .attr("r", 2);
+        .attr("cx", xMap)
+        .attr("cy", yMap)
+        .attr("r", 5);
        
 };
 
@@ -349,7 +355,7 @@ function mergeData(teenArea, teenPreg, GDPData){
 
     })
 
-    var finalObject = Object.assign({}, indiDict1, indiDict2, indiDict3);
+    var finalObject = Object.assign([], indiDict1, indiDict2, indiDict3);
     return finalObject;
     };
     

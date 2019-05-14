@@ -180,12 +180,7 @@ function drawScatter(teenArea, teenPreg, GDPData){
 
     var dataset = mergeData(teenArea, teenPreg, GDPData)
 
-    var countries = ["Croatia", "Italia", "Spain", "Greece", "France", "Slovenia", "Italy"]
-
-
     console.log(dataset)
-    var country = console.log(countries[2])
-    console.log(dataset["Adolescent fertility rates"].Spain)
   
     var margin = 
             {
@@ -199,27 +194,42 @@ function drawScatter(teenArea, teenPreg, GDPData){
     var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")") // make new frame inside the svg      
 
     var xScale = d3.scaleLinear()     // make seperate bins for every country
-        // .domain([0, d3.max(teenArea, function(d) { return d.Datapoint; })])
         .domain([0,20])
         .range([0, w]);
 
-    var yScale = d3.scaleLinear()
-        // .domain([0, d3.max(dataset, function(d) { return d; })])     
+    var yScale = d3.scaleLinear() 
         .domain([0, 20])   
         .range([h, 0]);
     
+    var colorScale = d3.scaleLinear()
+        .domain([21000, 42000])        // make the bar colour go from blue to black
+        .range([255, 0])
+    
     var sizeScale = d3.scaleLinear()
-        .domain([0.25, 0.6])        // make the bar colour go from blue to black
-        .range([5, 50])
+        .domain([21000, 42000])        // make the bar colour go from blue to black
+        .range([2, 15])
 
     var tip = d3.tip()              // displays data when hovering
         .attr('class', 'd3-tip')
         .offset([-20, 0])
         .html(function(d) {
-            return "<strong>GINI Value:</strong> <span style='color:red'>" + d.Value + "</span>";
+            return "<strong>Country:</strong> <strong><span style='color:red'>" + d + ' ' + '(' + dataset['Adolescent fertility rates'][d][updater] + ' , ' + dataset['Children (0-17) living in areas with problems with crime or violence (%)'][d][updater] + ')' + "</span></strong>";
         })    
 
         svg.call(tip); 
+
+    // source of legend: https://d3-legend.susielu.com/#size
+    var linearColor = d3.scaleLinear()
+        .domain([20,40])
+        .range(["rgb(20,130,255)", "rgb(20,130,0)"]);
+    
+    var legendLinear = d3.legendColor()
+        .shapeWidth(30)
+        .title("GDP in Thousands")
+        .labelFormat(d3.format(".0f"))
+        .orient('horizontal')
+        .scale(linearColor)
+
         
     // Add x-axis
     g.append("g")
@@ -260,16 +270,63 @@ function drawScatter(teenArea, teenPreg, GDPData){
                 "translate(" + (w/2) + " ," + 
                     (-20) + ")")
         .style("text-anchor", "middle")
-        .text("Fertility Rate & Living Standards of Teens over various GDPs");
+        .text("Fertility Rate & Living Standards of Teens in Mediterranean Countries");
+
+    g.append("g")
+        .attr("class", "legendLinear")
+        .attr("transform", "translate(700,20)");
+
+    g.select(".legendLinear")
+        .call(legendLinear);
+
+
+    var updater = 0
 
     g.selectAll("circle")
-        .data(dataset)
+        .data(Object.keys(dataset[Object.keys(dataset)[0]]))
         .enter()
         .append("circle")
-        .attr("cx", xMap)
-        .attr("cy", yMap)
-        .attr("r", 5);
-       
+        .attr("cx", function(d){
+            let tim = dataset['Adolescent fertility rates'][d][updater];
+            return xScale(tim);
+        })
+        .attr("cy", function(d){
+            let pointsY = dataset["Children (0-17) living in areas with problems with crime or violence (%)"][d][updater];
+            return yScale(pointsY);
+        })
+        .attr("r", 10)
+        .attr("fill", function(d) {
+            return "rgb(20,130, " + colorScale(dataset["Gross domestic product (expenditure approach)"][d][updater]) + ")" })
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)  
+
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("year");
+        output.innerHTML = slider.value;
+
+        slider.oninput = function() {
+        output.innerHTML = this.value;
+        update(Object.keys(dataset[Object.keys(dataset)[0]]), output.innerHTML)
+        };
+
+    function update(data, output) {
+        g.selectAll("circle")
+            .attr("cx", function(d){
+                let tim = dataset['Adolescent fertility rates'][d][updater];
+                return xScale(tim);
+            })
+            .attr("cy", function(d){
+                let pointsY = dataset["Children (0-17) living in areas with problems with crime or violence (%)"][d][updater];
+                return yScale(pointsY);
+            })
+            .attr("r", 10)
+            .attr("fill", function(d) {
+                return "rgb(20,130, " + colorScale(dataset["Gross domestic product (expenditure approach)"][d][updater]) + ")" 
+            })
+
+        updater = (output - 2012)
+        } 
+        
 };
 
 function mergeData(teenArea, teenPreg, GDPData){
@@ -357,5 +414,5 @@ function mergeData(teenArea, teenPreg, GDPData){
 
     var finalObject = Object.assign([], indiDict1, indiDict2, indiDict3);
     return finalObject;
+
     };
-    

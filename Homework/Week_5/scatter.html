@@ -11,6 +11,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
         <script src="scatter.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
         <link rel="stylesheet" type="text/css" href="scatter.css"/>
     </head>
 
@@ -22,18 +23,9 @@
         Data source: OECD</div>
 
         <div class="slidecontainer">
-            <input type="range" min="2012" max="2016" value="1" class="slider" id="myRange">
-            <p>Value: <span id="demo"></span></p>
+            <input type="range" min="2012" max="2016" value="0" class="slider" id="myRange">
+            <p>Year <span id="year"></span></p>
         </div>
-        <script>
-            var slider = document.getElementById("myRange");
-            var output = document.getElementById("demo");
-            output.innerHTML = slider.value;
-
-            slider.oninput = function() {
-            output.innerHTML = this.value;
-            }
-        </script>
     </body>
 </html> 
         

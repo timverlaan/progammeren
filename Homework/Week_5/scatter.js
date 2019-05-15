@@ -2,32 +2,26 @@
 //  11691328
 //  Displaying Json data in HTML Canvas
 
-window.onload = function() {
-
+window.onload = function(){
     loadData()
   };
 
 function loadData(){
 
+    // load in the APIs
     var teensInViolentArea = "https://stats.oecd.org/SDMX-JSON/data/CWB/AUS+AUT+BEL+BEL-VLG+CAN+CHL+CZE+DNK+EST+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ISR+ITA+JPN+KOR+LVA+LTU+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+SVN+ESP+SWE+CHE+TUR+GBR+USA+OAVG+NMEC+BRA+BGR+CHN+COL+CRI+HRV+CYP+IND+IDN+MLT+PER+ROU+RUS+ZAF.CWB11/all?startTime=2010&endTime=2017"
     var teenPregnancies = "https://stats.oecd.org/SDMX-JSON/data/CWB/AUS+AUT+BEL+BEL-VLG+CAN+CHL+CZE+DNK+EST+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ISR+ITA+JPN+KOR+LVA+LTU+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+SVN+ESP+SWE+CHE+TUR+GBR+USA+OAVG+NMEC+BRA+BGR+CHN+COL+CRI+HRV+CYP+IND+IDN+MLT+PER+ROU+RUS+ZAF.CWB46/all?startTime=1960&endTime=2017"
     var GDP = "https://stats.oecd.org/SDMX-JSON/data/SNA_TABLE1/AUS+AUT+BEL+CAN+CHL+CZE+DNK+EST+FIN+FRA+DEU+GRC+HUN+ISL+IRL+ISR+ITA+JPN+KOR+LVA+LTU+LUX+MEX+NLD+NZL+NOR+POL+PRT+SVK+SVN+ESP+SWE+CHE+TUR+GBR+USA+EU28+EU15+OECDE+OECD+OTF+NMEC+ARG+BRA+BGR+CHN+COL+CRI+HRV+CYP+IND+IDN+MLT+ROU+RUS+SAU+ZAF+FRME+DEW.B1_GE.HCPC/all?startTime=2012&endTime=2018&dimensionAtObservation=allDimensions"
     var requests = [d3.json(teensInViolentArea), d3.json(teenPregnancies), d3.json(GDP)];
 
-    Promise.all(requests).then(function(response) {
-        // console.log(response)
-        var teenArea = transformResponse(response[0]);
-        
-        var teenPreg = transformResponse(response[1]);
+    // handle asyncronity 
+    Promise.all(requests).then(function(response){
 
+        var teenArea = transformResponse(response[0]);        
+        var teenPreg = transformResponse(response[1]);
         var GDPData = transformResponse1(response[2]);
 
-        // console.log(teenArea);
-        // console.log(teenPreg)
-        // console.log(GDPData)
-
-        drawScatter(teenArea, teenPreg, GDPData)
-        
+        drawScatter(teenArea, teenPreg, GDPData);        
     }).catch(function(e){
         throw(e);
     });
@@ -172,16 +166,14 @@ function transformResponse1(data){
 
 function drawScatter(teenArea, teenPreg, GDPData){
 
-    var svg = d3.select("body").append("svg").attr("width", "960").attr("height", "500");     
-
+    // create the SVG (dimensions in sinc with the x and y axis)
+    var svg = d3.select("body").append("svg").attr("width", "800").attr("height", "600");     
     var teenArea = teenArea;
     var teenPreg = teenPreg;
     var GDPData = GDPData;
-
-    var dataset = mergeData(teenArea, teenPreg, GDPData)
-
-    console.log(dataset)
-  
+    var dataset = mergeData(teenArea, teenPreg, GDPData);
+    
+    // set margins for inner g element 
     var margin = 
             {
             top: 35,
@@ -191,34 +183,34 @@ function drawScatter(teenArea, teenPreg, GDPData){
             };
     var w = +svg.attr("width") - margin.left - margin.right;
     var h = +svg.attr("height") - margin.top - margin.bottom;
-    var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")") // make new frame inside the svg      
+    var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");      
 
-    var xScale = d3.scaleLinear()     // make seperate bins for every country
+    // set X scale 
+    var xScale = d3.scaleLinear()     
         .domain([0,20])
         .range([0, w]);
 
+    // set Y scale
     var yScale = d3.scaleLinear() 
-        .domain([0, 20])   
+        .domain([0, 15])   
         .range([h, 0]);
     
+    // set color scale based on min and max GDP values
     var colorScale = d3.scaleLinear()
-        .domain([21000, 42000])        // make the bar colour go from blue to black
-        .range([255, 0])
+        .domain([21000, 42000])        
+        .range([255, 0]);
     
-    var sizeScale = d3.scaleLinear()
-        .domain([21000, 42000])        // make the bar colour go from blue to black
-        .range([2, 15])
-
-    var tip = d3.tip()              // displays data when hovering
+    //  make tip display country, x and y coordinate when hovering       
+    var tip = d3.tip()              
         .attr('class', 'd3-tip')
         .offset([-20, 0])
-        .html(function(d) {
+        .html(function(d){
             return "<strong>Country:</strong> <strong><span style='color:red'>" + d + ' ' + '(' + dataset['Adolescent fertility rates'][d][updater] + ' , ' + dataset['Children (0-17) living in areas with problems with crime or violence (%)'][d][updater] + ')' + "</span></strong>";
-        })    
+        });    
 
         svg.call(tip); 
 
-    // source of legend: https://d3-legend.susielu.com/#size
+    // source of legend: https://d3-legend.susielu.com/#color
     var linearColor = d3.scaleLinear()
         .domain([20,40])
         .range(["rgb(20,130,255)", "rgb(20,130,0)"]);
@@ -228,15 +220,14 @@ function drawScatter(teenArea, teenPreg, GDPData){
         .title("GDP in Thousands")
         .labelFormat(d3.format(".0f"))
         .orient('horizontal')
-        .scale(linearColor)
+        .scale(linearColor);
 
-        
     // Add x-axis
     g.append("g")
-    .attr("class", "axis-x")
-    .attr("transform", "translate(0," + h  + ")")
-    .attr("x", w)
-    .call(d3.axisBottom(xScale));
+        .attr("class", "axis-x")
+        .attr("transform", "translate(0," + h  + ")")
+        .attr("x", w)
+        .call(d3.axisBottom(xScale));
 
     // Add y-axis
     g.append("g")
@@ -251,7 +242,7 @@ function drawScatter(teenArea, teenPreg, GDPData){
                 "translate(" + (w/2) + " ," + 
                     (h + margin.top ) + ")")
         .style("text-anchor", "middle")
-        .text("Children (0-17) living in areas with problems with crime or violence (%)");
+        .text("Adolescent fertility rates (%)");
             
     // text label for the y axis
     g.append("text")
@@ -261,9 +252,9 @@ function drawScatter(teenArea, teenPreg, GDPData){
         .attr("dy", "1em")
         .attr("id", "info")
         .style("text-anchor", "middle")
-        .text("Adolescent fertility rates"); 
+        .text("Children living in crime or violence areas (%)"); 
 
-    // text label for the x axis
+    // text label for the title
     g.append("text")   
         .attr("id", "title")
         .attr("transform",
@@ -272,58 +263,65 @@ function drawScatter(teenArea, teenPreg, GDPData){
         .style("text-anchor", "middle")
         .text("Fertility Rate & Living Standards of Teens in Mediterranean Countries");
 
+    // add legend to g element
     g.append("g")
         .attr("class", "legendLinear")
-        .attr("transform", "translate(700,20)");
+        .attr("transform", "translate(580,20)");
 
     g.select(".legendLinear")
         .call(legendLinear);
 
+    // initiate the updater
+    var updater = 0;
 
-    var updater = 0
-
+    // draw the first set of data points in the g element
     g.selectAll("circle")
-        .data(Object.keys(dataset[Object.keys(dataset)[0]]))
+        // set the country arrays as the d value
+        .data(Object.keys(dataset[Object.keys(dataset)[0]])) 
         .enter()
         .append("circle")
-        .attr("cx", function(d){
-            let tim = dataset['Adolescent fertility rates'][d][updater];
-            return xScale(tim);
-        })
         .attr("cy", function(d){
-            let pointsY = dataset["Children (0-17) living in areas with problems with crime or violence (%)"][d][updater];
+            let pointsY = dataset['Adolescent fertility rates'][d][updater];
             return yScale(pointsY);
+        })
+        .attr("cx", function(d){
+            let pointsX = dataset["Children (0-17) living in areas with problems with crime or violence (%)"][d][updater];
+            return xScale(pointsX);
         })
         .attr("r", 10)
         .attr("fill", function(d) {
             return "rgb(20,130, " + colorScale(dataset["Gross domestic product (expenditure approach)"][d][updater]) + ")" })
         .on('mouseover', tip.show)
-        .on('mouseout', tip.hide)  
-
+        .on('mouseout', tip.hide);  
+        
+        // make slider display the year it is selecting
         var slider = document.getElementById("myRange");
         var output = document.getElementById("year");
         output.innerHTML = slider.value;
 
-        slider.oninput = function() {
+        slider.oninput = function(){
         output.innerHTML = this.value;
+        // call update function if slider is used
         update(Object.keys(dataset[Object.keys(dataset)[0]]), output.innerHTML)
         };
 
-    function update(data, output) {
+    // update the g element when the slider is used    
+    function update(data, output){
         g.selectAll("circle")
-            .attr("cx", function(d){
-                let tim = dataset['Adolescent fertility rates'][d][updater];
-                return xScale(tim);
-            })
             .attr("cy", function(d){
-                let pointsY = dataset["Children (0-17) living in areas with problems with crime or violence (%)"][d][updater];
+                let pointsY = dataset['Adolescent fertility rates'][d][updater];
                 return yScale(pointsY);
+            })
+            .attr("cx", function(d){
+                let pointsX = dataset["Children (0-17) living in areas with problems with crime or violence (%)"][d][updater];
+                return xScale(pointsX);
             })
             .attr("r", 10)
             .attr("fill", function(d) {
                 return "rgb(20,130, " + colorScale(dataset["Gross domestic product (expenditure approach)"][d][updater]) + ")" 
             })
 
+        // value of output is 'year' but updater needs to start at 0
         updater = (output - 2012)
         } 
         
@@ -335,7 +333,7 @@ function mergeData(teenArea, teenPreg, GDPData){
     // as value
     var dataPoints = []
 
-    // list with countries I want to use
+    // list with countries and years I want to use
     let countries = ["Croatia", "Italia", "Spain", "Greece", "France", "Slovenia", "Italy"]
     let years = ["2012", "2013", "2014", "2015", "2016"]
     var counter = 0
@@ -395,7 +393,7 @@ function mergeData(teenArea, teenPreg, GDPData){
         counter = 0
         for (var j = 0; j < Object.values(GDPData).length; j++){
             if (countries.includes(Object.values(GDPData)[j].Country)){
-                if (years.includes(Object.values(GDPData)[j].Year))  {
+                if (years.includes(Object.values(GDPData)[j].Year)){
                     var nation = Object.values(GDPData)[j].Country
                     var indicator = Object.values(GDPData)[j].Transaction
                     dataPoints.push(Object.values(GDPData)[j].Datapoint)
@@ -414,5 +412,4 @@ function mergeData(teenArea, teenPreg, GDPData){
 
     var finalObject = Object.assign([], indiDict1, indiDict2, indiDict3);
     return finalObject;
-
     };

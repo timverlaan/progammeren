@@ -1,0 +1,16 @@
+/*  Tim Verlaan
+    11691328
+    Displaying JSON data in HTML Canvas */
+
+    #info
+{
+    font:Verdana, Geneva, sans-serif;
+    font-size:16px;
+    text-align:middle;
+    background-color:#CCD1D1  ;
+    height:75px;
+    width: 960px;
+    vertical-align:middle;
+    white-space: pre;
+    font-weight: bold;
+}

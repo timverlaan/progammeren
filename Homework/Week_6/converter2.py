@@ -13,19 +13,39 @@ columns_keep = ['year', 'fullName', 'gender', 'typeOfDeath', 'employedAs', 'orga
 
 small_df = df[columns_keep]
 
+small_df['photoUrl'] = small_df['photoUrl'].fillna('https://bit.ly/2Yxo3Jh')
+small_df['coverage'] = small_df['coverage'].fillna('War')
+
 country_series = small_df.groupby('country').apply(lambda r : r.drop(['country'], axis=1).to_json())
 
-fullDict = {}
+fullList = []
 
 for ind, a in country_series.iteritems():
     b = json.loads(a)
     c = b['fullName']
     smallDict = {}
-    for index, journalist in c.items():
-        smallDict[journalist] = {}
-        for i in b.keys():
-            smallDict[journalist][i] = b[i][index]
-    fullDict[ind] = (smallDict)
+    smallDict['country'] = ind
+    smallDict['journalists'] = []
+    smallDict['pieChart'] = []
+    male = 0
+    female = 0 
 
-with open('result2.json', 'w') as f:
-    json.dump(fullDict, f)
+    for index, journalist in c.items():
+        smallerDict = {}
+        for i in b.keys():
+            smallerDict[i] = b[i][index]
+            if b[i][index] == 'Male':
+                male += 1
+            if b[i][index] == 'Female':
+                female += 1
+        smallDict['journalists'].append(smallerDict)
+    smallDict['pieChart'].append({'gender': 'male', 'value': male})
+    smallDict['pieChart'].append({'gender': 'female', 'value': female})
+
+    smallDict['lengthList'] = len(smallDict['journalists'])
+    fullList.append(smallDict)
+
+with open('result1.json', 'w') as f:
+    json.dump(fullList, f)
+
+    # pp.pprint(fullList)

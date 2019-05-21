@@ -122,9 +122,45 @@ function drawBar(data){
         .style("text-anchor", "middle")
         .text("Journalists Killed in Foreign Countries");
 
-        drawPie(data);
+    drawPie(data);
 
-}
+            // update the g element when the slider is used    
+    function update(data){
+
+    // shape helper to build arcs:
+    var arcGenerator = d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius)
+    
+    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    svg
+    .selectAll('mySlices')
+    .data(data_ready)
+    .enter()
+    .append('path')
+        .attr('d', arcGenerator)
+        .attr('fill', function(d){ return color((d.data.key)) })
+        // .attr('fill', 'blue')
+        .attr("stroke", "black")
+        .style("stroke-width", "2px")
+        .style("opacity", 0.7)
+
+    // Now add the annotation. Use the centroid method to get the best coordinates
+    svg
+    .selectAll('mySlices')
+    .data(data_ready)
+    .enter()
+    .append('text')
+        .text(function(d){ 
+            // console.log(d.data.key) 
+            return  d.data.key})
+        .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+        .style("text-anchor", "middle")
+        .style("font-size", 17)
+
+
+    }
+};
 
 function drawPie(data){
 
@@ -146,21 +182,27 @@ function drawPie(data){
         .append("g")
         .attr("transform", "translate(" + widthPC / 2 + "," + heightPC / 2 + ")");
 
-    // set the color scale
-    var color = d3.scaleOrdinal()
-        .domain(data)
-        .range(d3.schemeSet2)
-
     // Compute the position of each group on the pie:
     var pie = d3.pie()
         .value(function(d) { return color(d.data); })
-    var data_ready = pie(d3.entries(data['pieChart']))
-    // Now I know that group A goes from 0 degrees to x degrees and so on.    
 
+    var pie = d3.pie()
+        .value(function(d) {return d.value; })
+    // var data_ready = pie(d3.entries(data['pieChart']))
+
+    let t = {'Male': dataset.pieChart[0].value, 'Female': dataset.pieChart[1].value}
+    data_ready = pie(d3.entries(t))
+    // Now I know that group A goes from 0 degrees to x degrees and so on.   
+    
     // shape helper to build arcs:
     var arcGenerator = d3.arc()
         .innerRadius(0)
         .outerRadius(radius)
+
+    // set the color scale
+    var color = d3.scaleOrdinal()
+        .domain(data_ready)
+        .range(d3.schemeSet2);
 
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
     svg
@@ -169,8 +211,8 @@ function drawPie(data){
     .enter()
     .append('path')
         .attr('d', arcGenerator)
-        // .attr('fill', function(d){ return (d.data.value.value) })
-        .attr('fill', 'blue')
+        .attr('fill', function(d){ return color((d.data.key)) })
+        // .attr('fill', 'blue')
         .attr("stroke", "black")
         .style("stroke-width", "2px")
         .style("opacity", 0.7)
@@ -182,10 +224,11 @@ function drawPie(data){
     .enter()
     .append('text')
         .text(function(d){ 
-            console.log(d.data.value) 
-            return "grp " + d.data.value.gender})
+            // console.log(d.data.key) 
+            return  d.data.key})
         .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
         .style("text-anchor", "middle")
         .style("font-size", 17)
 
 }
+

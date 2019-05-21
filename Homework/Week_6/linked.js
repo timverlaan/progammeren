@@ -79,7 +79,7 @@ function drawBar(data){
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide)       // make dynamic
         .on('click', function(d){
-            drawPie(d)
+            updatePie(d)
         })
 
     // Add x-axis
@@ -124,43 +124,10 @@ function drawBar(data){
 
     drawPie(data);
 
-            // update the g element when the slider is used    
-    function update(data){
 
-    // shape helper to build arcs:
-    var arcGenerator = d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius)
-    
-    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-    svg
-    .selectAll('mySlices')
-    .data(data_ready)
-    .enter()
-    .append('path')
-        .attr('d', arcGenerator)
-        .attr('fill', function(d){ return color((d.data.key)) })
-        // .attr('fill', 'blue')
-        .attr("stroke", "black")
-        .style("stroke-width", "2px")
-        .style("opacity", 0.7)
-
-    // Now add the annotation. Use the centroid method to get the best coordinates
-    svg
-    .selectAll('mySlices')
-    .data(data_ready)
-    .enter()
-    .append('text')
-        .text(function(d){ 
-            // console.log(d.data.key) 
-            return  d.data.key})
-        .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
-        .style("text-anchor", "middle")
-        .style("font-size", 17)
-
-
-    }
 };
+
+var updatePie;
 
 function drawPie(data){
 
@@ -188,7 +155,6 @@ function drawPie(data){
 
     var pie = d3.pie()
         .value(function(d) {return d.value; })
-    // var data_ready = pie(d3.entries(data['pieChart']))
 
     let t = {'Male': dataset.pieChart[0].value, 'Female': dataset.pieChart[1].value}
     data_ready = pie(d3.entries(t))
@@ -212,10 +178,9 @@ function drawPie(data){
     .append('path')
         .attr('d', arcGenerator)
         .attr('fill', function(d){ return color((d.data.key)) })
-        // .attr('fill', 'blue')
         .attr("stroke", "black")
         .style("stroke-width", "2px")
-        .style("opacity", 0.7)
+        // .style("opacity", 0.7)
 
     // Now add the annotation. Use the centroid method to get the best coordinates
     svg
@@ -230,5 +195,37 @@ function drawPie(data){
         .style("text-anchor", "middle")
         .style("font-size", 17)
 
-}
+                    // update the g element when the slider is used    
+    updatePie = function(dataset){
 
+        let t = {'Male': dataset.pieChart[0].value, 'Female': dataset.pieChart[1].value}
+        data_ready = pie(d3.entries(t))
+
+        // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+        svg
+        .selectAll('mySlices')
+        .data(data_ready)
+        .enter()
+        .append('path')
+            .attr('d', arcGenerator)
+            .attr('fill', function(d){ return color((d.data.key)) })
+            // .attr('fill', 'blue')
+            .attr("stroke", "black")
+            .style("stroke-width", "2px")
+            // .style("opacity", 0.7)
+
+        // Now add the annotation. Use the centroid method to get the best coordinates
+        svg
+        .selectAll('mySlices')
+        .data(data_ready)
+        .enter()
+        .append('text')
+            .text(function(d){ 
+                // console.log(d.data.key) 
+                return  d.data.key})
+            .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+            .style("text-anchor", "middle")
+            .style("font-size", 17)
+
+            }
+}

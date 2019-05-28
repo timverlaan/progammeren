@@ -9,9 +9,16 @@
     text-align:middle;
     background-color:#CCD1D1  ;
     height:75px;
-    width: 960px;
+    width: 1260px;
     vertical-align:middle;
     white-space: pre;
+    font-weight: bold;
+}
+
+#info
+{
+    font:Verdana, Geneva, sans-serif;
+    font-size:13.5px;
     font-weight: bold;
 }
 
@@ -68,4 +75,16 @@
 #photo:hover
 {
     text: id
+}
+
+#titlePie
+{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#titleCountry
+{
+    font-size: 18px;
+    font-weight: bold;
 }

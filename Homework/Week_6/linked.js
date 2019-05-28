@@ -288,9 +288,6 @@ function drawPie(data){
                         })
                         .attr('id', 'img')
 
-
-
-
         // title piechart
         svg.append("text")   
             .attr("id", "titlePie")

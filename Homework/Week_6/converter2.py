@@ -29,6 +29,8 @@ for ind, a in country_series.iteritems():
     smallDict['pieChart'] = []
     male = 0
     female = 0 
+    genderDict = {}
+    genderDict['genderTotal'] = []
 
     for index, journalist in c.items():
         smallerDict = {}
@@ -42,8 +44,10 @@ for ind, a in country_series.iteritems():
     smallDict['pieChart'].append({'gender': 'male', 'value': male})
     smallDict['pieChart'].append({'gender': 'female', 'value': female})
 
+
     smallDict['lengthList'] = len(smallDict['journalists'])
     fullList.append(smallDict)
+
 
 with open('result1.json', 'w') as f:
     json.dump(fullList, f)

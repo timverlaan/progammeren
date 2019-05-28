@@ -54,7 +54,8 @@ function drawBar(data){
                 .attr('class', 'd3-tip')
                 .offset([-20, 0])
                 .html(function(d) {
-                    return "<strong>Country:</strong> <span style='color:red'>" + d.country + "</span>";
+                    fullCountry = toCountryName(d.country)
+                    return "<strong>Country:</strong> <span style='color:red'>" + fullCountry + "</span>";
                 })    
 
         svg.call(tip);        
@@ -222,26 +223,35 @@ function drawPie(data){
                         .attr('src', function(d){              
                             return d.photoUrl
                         })
-                        .attr('id', function(d){              
+                        .attr('title', function(d){              
                             return d.fullName
                         })
 
-        // text label for the x axis
+        // title piechart
         svg.append("text")   
-            .attr("id", "title")
+            .attr("id", "titlePie")
             .attr("transform",
-                    "translate(0 , -180)")
-            .attr("dy", "-1em")
+                    "translate(0 , -170)")
+            .attr("dy", "-2em")
             .style("text-anchor", "middle")
             .text("Division Male/Female")
 
 
         svg.append("text")
-            .attr("id", "title")
+            .attr("id", "titlePie")
             .attr("transform",
-                    "translate(0 , -180)")
+                    "translate(0 , -170)")
+            .attr("dy", "-1em")
             .style("text-anchor", "middle")
-            .text("killed in " + dataset.country)
+            .text("killed in")
+
+        svg.append("text")
+            .attr("id", "titleCountry")
+            .attr("transform",
+                    "translate(0 , -170)")
+            .style("text-anchor", "middle")
+            .text(toCountryName(dataset.country))
+
     
     // update the g element when the slider is used    
     updatePie = function(dataset){
@@ -265,7 +275,7 @@ function drawPie(data){
         }
 
         photoDiv = d3.select("#photo").selectAll('img')
-        .remove();
+                     .remove();
 
         photoDiv = d3.select("#photo").selectAll('img')
                         .data(dataset.journalists)
@@ -276,33 +286,40 @@ function drawPie(data){
                         .attr('src', function(d){              
                             return d.photoUrl
                         })
-                        .attr('alt', function(d){            
+                        .attr('title', function(d){            
                             return d.fullName
                         })
 
 
 
 
-        // text label for the x axis
-        var titlePie = d3.selectAll("#title")  
-        .remove();
-
-        // text label for the x axis
+        // title piechart
         svg.append("text")   
-            .attr("id", "title")
+            .attr("id", "titlePie")
             .attr("transform",
-                    "translate(0 , -180)")
-            .attr("dy", "-1em")
+                    "translate(0 , -170)")
+            .attr("dy", "-2em")
             .style("text-anchor", "middle")
             .text("Division Male/Female")
 
 
         svg.append("text")
-            .attr("id", "title")
+            .attr("id", "titlePie")
             .attr("transform",
-                    "translate(0 , -180)")
+                    "translate(0 , -170)")
+            .attr("dy", "-1em")
             .style("text-anchor", "middle")
-            .text("killed in " + toCountryName(dataset.country))
+            .text("killed in")
+
+        d3.selectAll('#titleCountry')
+            .remove();
+
+        svg.append("text")
+            .attr("id", "titleCountry")
+            .attr("transform",
+                    "translate(0 , -170)")
+            .style("text-anchor", "middle")
+            .text(toCountryName(dataset.country))
     
 }
 

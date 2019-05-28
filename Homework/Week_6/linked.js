@@ -14,12 +14,14 @@ function loadData(){
         console.log(data);
         
         drawBar(data)
+        
+        drawPie(data);
     });
 }
 
 function drawBar(data){
     // create the SVG (dimensions in sinc with the x and y axis)
-    var svg = d3.select("body").append("svg").attr("width", "1260").attr("height", "500");     
+    var svg = d3.select("#bar").append("svg").attr("width", "1260").attr("height", "500");     
     
     // set margins for inner g element 
     var margin = 
@@ -34,25 +36,26 @@ function drawBar(data){
     var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
     var barPadding = 1
 
-    var xScale = d3.scaleBand()     // make seperate bins for every country
-        .domain(data.map(function (d) { return d.country; }))
-        // .domain([0, 50])
-        .range([0, w]);
+    // make seperate bins for every country
+    var xScale = d3.scaleBand()     
+                   .domain(data.map(function (d) { return d.country; }))
+                   .range([0, w]);
 
     var yScale = d3.scaleLinear()
-        .domain([0, 30])             // data is normalized
-        .range([h, 0]);
+                   .domain([0, 30])             
+                   .range([h, 0]);
     
     var ColourScale = d3.scaleLinear()
-        .domain([0, 27])        // make the bar colour go from blue to black
-        .range([0, 255])
+                        .domain([0, 27])        
+                        .range([0, 255])
 
-    var tip = d3.tip()              // displays data when hovering
-        .attr('class', 'd3-tip')
-        .offset([-20, 0])
-        .html(function(d) {
-            return "<strong>Country:</strong> <span style='color:red'>" + d.country + "</span>";
-        })    
+    // displays data when hovering
+    var tip = d3.tip()              
+                .attr('class', 'd3-tip')
+                .offset([-20, 0])
+                .html(function(d) {
+                    return "<strong>Country:</strong> <span style='color:red'>" + d.country + "</span>";
+                })    
 
         svg.call(tip);        
 
@@ -60,24 +63,24 @@ function drawBar(data){
         .data(data)
         .enter()
         .append("rect")
-        .attr("class", "bar")       // make hover
+        .attr("class", "bar")       
         .attr("width", (w / 42 - barPadding))
         .attr("x", function(d)
         {             
             return xScale(d.country);
         })     
         .attr("fill", function(d) {
-            return "rgb(0, 0, " + ColourScale(d.lengthList) + ")"; // minus smallest value to have get a nice spectrum
+            return "rgb(0, 0, " + ColourScale(d.lengthList) + ")"; 
         })
         .attr("y", function(d) {
-            return yScale(d.lengthList); //Height minus data value
+            return yScale(d.lengthList); 
         })      
         .attr("height", function(d)
         {
             return  h - yScale(d.lengthList);
         })         
         .on('mouseover', tip.show)
-        .on('mouseout', tip.hide)       // make dynamic
+        .on('mouseout', tip.hide)       
         .on('click', function(d){
             updatePie(d)
         })
@@ -113,17 +116,14 @@ function drawBar(data){
         .style("text-anchor", "middle")
         .text("Number of Journalists killed"); 
 
-    // text label for the x axis
+    // text label for the title
     g.append("text")   
         .attr("id", "title")
         .attr("transform",
                 "translate(" + (w/2) + " ," + 
-                    (-20) + ")")
+                    (-10) + ")")
         .style("text-anchor", "middle")
-        .text("Journalists Killed in Foreign Countries");
-
-    drawPie(data);
-
+        .text("Journalists Killed in Foreign Countries 1994 - 2019");
 
 };
 
@@ -133,6 +133,7 @@ function drawPie(data){
 
     let dataset = Array.isArray(data) ? data[0] : data
     console.log(dataset);
+    
     // set the dimensions and margins of the graph
     var widthPC = 450
         heightPC = 450
@@ -142,90 +143,167 @@ function drawPie(data){
     var radius = Math.min(widthPC, heightPC) / 2 - marginPC
 
     // append the svg object to the div called 'my_dataviz'
-    var svg = d3.select("body")
-        .append("svg")
-            .attr("width", widthPC)
-            .attr("height", heightPC)
-        .append("g")
-        .attr("transform", "translate(" + widthPC / 2 + "," + heightPC / 2 + ")");
+    var svg = d3.select("#pie")
+                .append("svg")
+                    .attr("width", widthPC)
+                    .attr("height", heightPC)
+                .append("g")
+                .attr("transform", "translate(" + widthPC / 2 + "," + heightPC / 2 + ")");
 
     // Compute the position of each group on the pie:
     var pie = d3.pie()
-        .value(function(d) { return color(d.data); })
+                .value(function(d) { return color(d.data); })
 
     var pie = d3.pie()
-        .value(function(d) {return d.value; })
+                .value(function(d) {return d.value; })
 
     let t = {'Male': dataset.pieChart[0].value, 'Female': dataset.pieChart[1].value}
+    
+    // let t = {'Male': dataset.pieChart[0].value, 'Female': dataset.pieChart[1].value}
     data_ready = pie(d3.entries(t))
     // Now I know that group A goes from 0 degrees to x degrees and so on.   
     
     // shape helper to build arcs:
     var arcGenerator = d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius)
+                         .innerRadius(0)
+                         .outerRadius(radius - 50)
 
     // set the color scale
     var color = d3.scaleOrdinal()
-        .domain(data_ready)
-        .range(d3.schemeSet2);
+                  .domain(data_ready)
+                  .range(d3.schemeSet2);
+
+        // displays data when hovering
+    var tip = d3.tip()              
+                .attr('class', 'd3-tip')
+                .offset([-20, 0])
+                .html(function(d) {
+                    return "<strong>Killed:</strong> <span style='color:red'>" + d.value + "</span>";
+                })    
+
+    svg.call(tip); 
+
+    var legendOrdinal = d3.legendColor()
+                            .shape("path", d3.symbol().type(d3.symbolTriangle).size(150)())
+                            .shapePadding(10)
+                            //use cellFilter to hide the "e" cell
+                            .cellFilter(function(d){ return d.label !== "e" })
+                            .scale(color);
 
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-    svg
-    .selectAll('mySlices')
-    .data(data_ready)
-    .enter()
-    .append('path')
-        .attr('d', arcGenerator)
-        .attr('fill', function(d){ return color((d.data.key)) })
-        .attr("stroke", "black")
-        .style("stroke-width", "2px")
-        // .style("opacity", 0.7)
+    var path = svg
+                    .selectAll('.mySlices')
+                    .data(data_ready)
+                    .enter()
+                    .append('path')
+                        .attr('d', arcGenerator)
+                        .attr('fill', function(d, i){ 
+                            return color((d.data.key)) })
+                        .attr("stroke", "black")
+                        .attr("class", "mySlices")
+                        .style("stroke-width", "2px")
+                        .on('mouseover', tip.show)
+                        .on('mouseout', tip.hide) 
 
-    // Now add the annotation. Use the centroid method to get the best coordinates
-    svg
-    .selectAll('mySlices')
-    .data(data_ready)
-    .enter()
-    .append('text')
-        .text(function(d){ 
-            // console.log(d.data.key) 
-            return  d.data.key})
-        .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
-        .style("text-anchor", "middle")
-        .style("font-size", 17)
+    svg.append("g")
+        .attr("class", "legendOrdinal")
+        .attr("transform", "translate(120, -240)");    
+    
+    svg.select(".legendOrdinal")
+        .call(legendOrdinal);
 
-                    // update the g element when the slider is used    
+
+    var photoDiv = d3.select("#photo").selectAll('img')
+                        .data(dataset.journalists)
+                        .enter()
+                        .append('img')
+                        .attr('width', 200)
+                        .attr('height', 200)
+                        .attr('src', function(d){              
+                            return d.photoUrl
+                        })
+                        .attr('id', function(d){              
+                            return d.fullName
+                        })
+
+        // text label for the x axis
+        svg.append("text")   
+            .attr("id", "title")
+            .attr("transform",
+                    "translate(0 , -180)")
+            .attr("dy", "-1em")
+            .style("text-anchor", "middle")
+            .text("Division Male/Female")
+
+
+        svg.append("text")
+            .attr("id", "title")
+            .attr("transform",
+                    "translate(0 , -180)")
+            .style("text-anchor", "middle")
+            .text("killed in " + dataset.country)
+    
+    // update the g element when the slider is used    
     updatePie = function(dataset){
 
         let t = {'Male': dataset.pieChart[0].value, 'Female': dataset.pieChart[1].value}
         data_ready = pie(d3.entries(t))
 
-        // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-        svg
-        .selectAll('mySlices')
-        .data(data_ready)
-        .enter()
-        .append('path')
-            .attr('d', arcGenerator)
-            .attr('fill', function(d){ return color((d.data.key)) })
-            // .attr('fill', 'blue')
-            .attr("stroke", "black")
-            .style("stroke-width", "2px")
-            // .style("opacity", 0.7)
+        path = path.data(data_ready)
+        path.transition().duration(750).attrTween("d", arcTween);
 
-        // Now add the annotation. Use the centroid method to get the best coordinates
-        svg
-        .selectAll('mySlices')
-        .data(data_ready)
-        .enter()
-        .append('text')
-            .text(function(d){ 
-                // console.log(d.data.key) 
-                return  d.data.key})
-            .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+        // Store the displayed angles in _current.
+        // Then, interpolate from _current to the new angles.
+        // During the transition, _current is updated in-place by d3.interpolate.
+        function arcTween(a) {
+            var i = d3.interpolate(this._current, a);
+            this._current = i(0);
+            return function(t, j) {
+            // console.log(dataset.journalists[j].photoUrl)
+            return arcGenerator(i(t));
+            };
+        }
+
+        photoDiv = d3.select("#photo").selectAll('img')
+        .remove();
+
+        photoDiv = d3.select("#photo").selectAll('img')
+                        .data(dataset.journalists)
+                        .enter()
+                        .append('img')
+                        .attr('width', 200)
+                        .attr('height', 200)
+                        .attr('src', function(d){              
+                            return d.photoUrl
+                        })
+                        .attr('alt', function(d){            
+                            return d.fullName
+                        })
+
+
+
+
+        // text label for the x axis
+        var titlePie = d3.selectAll("#title")  
+        .remove();
+
+        // text label for the x axis
+        svg.append("text")   
+            .attr("id", "title")
+            .attr("transform",
+                    "translate(0 , -180)")
+            .attr("dy", "-1em")
             .style("text-anchor", "middle")
-            .style("font-size", 17)
+            .text("Division Male/Female")
 
-            }
+
+        svg.append("text")
+            .attr("id", "title")
+            .attr("transform",
+                    "translate(0 , -180)")
+            .style("text-anchor", "middle")
+            .text("killed in " + toCountryName(dataset.country))
+    
+}
+
 }

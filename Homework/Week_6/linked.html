@@ -10,18 +10,25 @@
         <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
         <script src="linked.js"></script>
+        <script src="country2code.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.js"></script>
         <link rel="stylesheet" type="text/css" href="linked.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     </head>
 
-    <body>
+    <body class="well well-sm">
         <h1>Linked views</h1>
 
-        <div id="info">        Tim Verlaan
+        <div id="headtext">        Tim Verlaan
         11691328 
-        Displaying Deaths of Foreign Journalists per Country
+        Displaying Deaths of Foreign Journalists per Country between 1994 - 2019
         Data source: CPJ</div>
+
+        
+        <div id="bar"></div>
+        <div id="pie" class="col-sm-4"></div>
+        <div id="photo" class="col-sm-8"></div>
 
     </body>
 </html> 

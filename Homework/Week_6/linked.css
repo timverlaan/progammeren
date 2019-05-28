@@ -2,10 +2,10 @@
     11691328
     Displaying JSON data in HTML Canvas */
 
-    #info
+    #headtext
 {
     font:Verdana, Geneva, sans-serif;
-    font-size:16px;
+    font-size:13.5px;
     text-align:middle;
     background-color:#CCD1D1  ;
     height:75px;
@@ -63,4 +63,9 @@
 {
     font-size: 22px;
     font-weight: bold
+}
+
+#photo:hover
+{
+    text: id
 }

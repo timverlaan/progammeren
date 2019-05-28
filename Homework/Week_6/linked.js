@@ -218,14 +218,13 @@ function drawPie(data){
                         .data(dataset.journalists)
                         .enter()
                         .append('img')
-                        .attr('width', 200)
-                        .attr('height', 200)
                         .attr('src', function(d){              
                             return d.photoUrl
                         })
                         .attr('title', function(d){              
                             return d.fullName
                         })
+                        .attr('id', 'img')
 
         // title piechart
         svg.append("text")   
@@ -281,14 +280,13 @@ function drawPie(data){
                         .data(dataset.journalists)
                         .enter()
                         .append('img')
-                        .attr('width', 200)
-                        .attr('height', 200)
                         .attr('src', function(d){              
                             return d.photoUrl
                         })
                         .attr('title', function(d){            
                             return d.fullName
                         })
+                        .attr('id', 'img')
 
 
 

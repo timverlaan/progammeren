@@ -4,7 +4,7 @@
 
 window.onload = function(){
     loadData()
-  };
+  }
 
 function loadData(){
 
@@ -32,7 +32,7 @@ function drawBar(data){
                 right: 20,
                 bottom: 50,
                 left: 50
-            };
+            }
     var w = +svg.attr("width") - margin.left - margin.right;
     var h = +svg.attr("height") - margin.top - margin.bottom;
     var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
@@ -58,7 +58,8 @@ function drawBar(data){
 
     svg.call(tip);        
 
-    // build bar chart  - (Removed colour scale in consultation with Sander, was not adding anything)
+    // build bar chart, standard color black is suitable for death  
+    // (Removed colour scale in consultation with Sander, was not adding anything)
     g.selectAll(".bar")
         .data(data)
         .enter()
@@ -105,7 +106,7 @@ function drawBar(data){
     g.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left)
-        .attr("x",0 - (h / 2))
+        .attr("x", 0 - (h / 2))
         .attr("dy", "1em")
         .attr("id", "info")
         .style("text-anchor", "middle")
@@ -120,7 +121,7 @@ function drawBar(data){
         .style("text-anchor", "middle")
         .text("Journalists Killed in Foreign Countries 1994 - 2019");
 
-};
+}
 
 var updatePie;
 
@@ -275,8 +276,8 @@ function drawPie(data){
             this._current = i(0);
             return function(t, j) {
                 return arcGenerator(i(t));
-            };
-        };
+            }
+        }
 
         // remove the images of the previous country
         d3.select("#photo").selectAll('a')

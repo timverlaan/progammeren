@@ -41,10 +41,10 @@ function drawBar(data){
     // make seperate bins for every country
     var xScale = d3.scaleBand()     
                    .domain(data.map(function (d) { return d.country; }))
-                   .range([0, w]);
+                   .range([0, w]);            
 
     var yScale = d3.scaleLinear()
-                   .domain([0, 30])             
+                   .domain([0, d3.max(data, function(d) { return d.lengthList })])             
                    .range([h, 0]);
 
     // displays data when hovering

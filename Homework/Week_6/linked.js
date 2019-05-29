@@ -174,7 +174,7 @@ function drawPie(data){
                   .domain(data_ready)
                   .range(d3.schemeSet2);
 
-        // displays data when hovering
+    // displays data when hovering
     var tip = d3.tip()              
                 .attr('class', 'd3-tip')
                 .offset([-20, 0])
@@ -194,18 +194,18 @@ function drawPie(data){
 
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
     var path = svg
-                    .selectAll('.mySlices')
-                    .data(data_ready)
-                    .enter()
-                    .append('path')
-                        .attr('d', arcGenerator)
-                        .attr('fill', function(d){ 
-                            return color((d.data.key)) })
-                        .attr("stroke", "black")
-                        .attr("class", "mySlices")
-                        .style("stroke-width", "2px")
-                        .on('mouseover', tip.show)
-                        .on('mouseout', tip.hide) 
+                .selectAll('.mySlices')
+                .data(data_ready)
+                .enter()
+                .append('path')
+                    .attr('d', arcGenerator)
+                    .attr('fill', function(d){ 
+                        return color((d.data.key)) })
+                    .attr("stroke", "black")
+                    .attr("class", "mySlices")
+                    .style("stroke-width", "2px")
+                    .on('mouseover', tip.show)
+                    .on('mouseout', tip.hide) 
 
     // make pie chart legend
     svg.append("g")
@@ -217,25 +217,23 @@ function drawPie(data){
         .call(legendOrdinal);
 
     // Create photo div in a so images are clickable and takes you to journalists page
-    var photoA = d3.select("#photo").selectAll('a')
-                    .data(dataset.journalists)
-                    .enter()
-                    .append('a')   
-                    .attr('href', function(d){  
-                        names = d.fullName
-                        names = names.split(" ").join("-")
-                        names = names.toLowerCase();
-                        // set hyperlink to right format 
-                        name_link = "https://cpj.org/data/people/" + names + "/index.php"
-                        return name_link
-                    }) 
-                    .append('img').attr('src', function(d){              
-                        return d.photoUrl
-                    })
-                    .attr('id', 'img')
-                    .attr('title', function(d){          
-                        return d.fullName
-                    });
+    d3.select("#photo").selectAll('a')
+        .data(dataset.journalists)
+        .enter()
+        .append('a')   
+        .attr('href', function(d){  
+            names = d.fullName.split(" ").join("-").toLowerCase();
+            // set hyperlink to right format 
+            name_link = "https://cpj.org/data/people/" + names + "/index.php"
+            return name_link
+        }) 
+        .append('img').attr('src', function(d){              
+            return d.photoUrl
+        })
+        .attr('id', 'img')
+        .attr('title', function(d){          
+            return d.fullName
+        });
 
         // title piechart
         svg.append("text")   
@@ -279,35 +277,32 @@ function drawPie(data){
             var i = d3.interpolate(this._current, a);
             this._current = i(0);
             return function(t, j) {
-            // console.log(dataset.journalists[j].photoUrl)
             return arcGenerator(i(t));
             };
         }
 
         // remove the images of the previous country
-        photoA = d3.select("#photo").selectAll('a')
-                     .remove();
+        d3.select("#photo").selectAll('a')
+            .remove();
 
         // update photo div in a so images are clickable and takes you to journalists page
-        photoA = d3.select("#photo").selectAll('a')
-                    .data(dataset.journalists)
-                    .enter()
-                    .append('a')   
-                    .attr('href', function(d){  
-                        names = d.fullName
-                        names = names.split(" ").join("-")
-                        names = names.toLowerCase();
-                        // set hyperlink to right format 
-                        name_link = "https://cpj.org/data/people/" + names + "/index.php"
-                        return name_link
-                    }) 
-                    .append('img').attr('src', function(d){              
-                        return d.photoUrl
-                    })
-                    .attr('id', 'img')
-                    .attr('title', function(d){          
-                        return d.fullName
-                    });
+        d3.select("#photo").selectAll('a')
+            .data(dataset.journalists)
+            .enter()
+            .append('a')   
+            .attr('href', function(d){  
+                names = d.fullName.split(" ").join("-").toLowerCase();
+                // set hyperlink to right format 
+                name_link = "https://cpj.org/data/people/" + names + "/index.php"
+                return name_link
+            }) 
+            .append('img').attr('src', function(d){              
+                return d.photoUrl
+            })
+            .attr('id', 'img')
+            .attr('title', function(d){          
+                return d.fullName
+            });
 
         // title piechart
         svg.append("text")   

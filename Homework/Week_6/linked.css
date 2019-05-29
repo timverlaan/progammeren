@@ -88,6 +88,13 @@
     font-weight: bold;
 }
 
+#titlePhoto
+{
+    font-size: 26px;
+    font-weight: bold;
+    padding: 5px;
+}
+
 #titleCountry
 {
     font-size: 18px;

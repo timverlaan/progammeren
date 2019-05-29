@@ -1,5 +1,5 @@
 var countryCodes = {
-    "Afghanistan":     "AFG",
+    "Afghanistan": "AFG",
     "Albania": "ALB",
     "Algeria": "DZA",
     "American Samoa": "ASM",
@@ -8,15 +8,15 @@ var countryCodes = {
     "Anguilla": "AIA",
     "Antarctica": "ATA",
     "Antigua and Barbuda": "ATG",
-    "Argentina":     "ARG",
+    "Argentina": "ARG",
     "Armenia": "ARM",
     "Aruba": "ABW",
     "Australia": "AUS",
     "Austria": "AUT",
     "Azerbaijan": "AZE",
     "Bahamas": "BHS",
-    "Bahrain":    "BHR",
-    "Bangladesh":    "BGD",
+    "Bahrain": "BHR",
+    "Bangladesh": "BGD",
     "Barbados": "BRB",
     "Belarus": "BLR",
     "Belgium": "BEL",
@@ -36,9 +36,9 @@ var countryCodes = {
     "Burkina Faso": "BFA",
     "Burundi": "BDI",
     "Cambodia": "KHM",
-    "Cameroon":    "CMR",
+    "Cameroon": "CMR",
     "Canada": "CAN",
-    "Cape Verde":    "CPV",
+    "Cape Verde": "CPV",
     "Cayman Islands": "CYM",
     "Central African Republic": "CAF",
     "Chad": "TCD",
@@ -253,20 +253,16 @@ var countryCodes = {
 function toCountryCode(country){
   country = countryCodes[country];
   return countryCode;
-}
+};
 
 function toCountryName(data){
-  // console.log(Object.keys(countryCodes).find(key => countryCodes[key] === data))
-
-  // return Object.keys(countryCodes).find(key => countryCodes[key] === data);
-
-  for (let country of Object.keys(countryCodes)) {
+  for (let country of Object.keys(countryCodes)){
     var code = countryCodes[country];
-    if (code == data) {
+    if (code == data){
       var keyCountry = _.invert(countryCodes)[code];
       return keyCountry
-    }
+    };
 
-}
-}
+  };
+};
   

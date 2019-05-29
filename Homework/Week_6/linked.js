@@ -44,10 +44,6 @@ function drawBar(data){
     var yScale = d3.scaleLinear()
                    .domain([0, 30])             
                    .range([h, 0]);
-    
-    var ColourScale = d3.scaleLinear()
-                        .domain([0, 27])        
-                        .range([0, 255])
 
     // displays data when hovering
     var tip = d3.tip()              
@@ -60,7 +56,7 @@ function drawBar(data){
 
     svg.call(tip);        
 
-    // build bar chart
+    // build bar chart  - (Removed colour scale in consultation with Sander, was not adding anything)
     g.selectAll(".bar")
         .data(data)
         .enter()
@@ -71,9 +67,6 @@ function drawBar(data){
         {             
             return xScale(d.country);
         })     
-        .attr("fill", function(d) {
-            return "rgb(0, 0, " + ColourScale(d.lengthList) + ")"; 
-        })
         .attr("y", function(d) {
             return yScale(d.lengthList); 
         })      
